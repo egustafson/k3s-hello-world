@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k3s-hello-world-deployment
+  namespace: default
+  labels:
+    app: k3s-hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k3s-hello-world
+  template:
+    metadata:
+      labels:
+        app: k3s-hello-world
+    spec:
+      containers:
+      - name: k3s-hello-world
+        image: k3s-hello-world
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: IfNotPresent
