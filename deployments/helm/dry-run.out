@@ -1,0 +1,208 @@
+NAME: myhello
+LAST DEPLOYED: Wed Sep  7 14:47:13 2022
+NAMESPACE: default
+STATUS: pending-install
+REVISION: 1
+HOOKS:
+---
+# Source: hello/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "myhello-test-connection"
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['myhello:80']
+  restartPolicy: Never
+MANIFEST:
+---
+# Source: hello/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myhello
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 5000
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+---
+# Source: hello/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myhello
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello
+      app.kubernetes.io/instance: myhello
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hello
+        app.kubernetes.io/instance: myhello
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: hello
+          securityContext:
+            {}
+          image: "k3s-hello-world:0.1.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          resources:
+            {}
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=hello,app.kubernetes.io/instance=myhello" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+NAME: myhello
+LAST DEPLOYED: Wed Sep  7 14:50:19 2022
+NAMESPACE: default
+STATUS: pending-install
+REVISION: 1
+HOOKS:
+---
+# Source: hello/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "myhello-test-connection"
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['myhello:80']
+  restartPolicy: Never
+MANIFEST:
+---
+# Source: hello/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myhello
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 5000
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+---
+# Source: hello/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myhello
+  labels:
+    helm.sh/chart: hello-0.1.0
+    app.kubernetes.io/name: hello
+    app.kubernetes.io/instance: myhello
+    app.kubernetes.io/version: "0.1.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello
+      app.kubernetes.io/instance: myhello
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hello
+        app.kubernetes.io/instance: myhello
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: hello
+          securityContext:
+            {}
+          image: "k3s-hello-world:0.1.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=hello,app.kubernetes.io/instance=myhello" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k3s-hello-world-service
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30001
+    targetPort: 5000
+    name: http
+  selector:
+    app: k3s-hello-world
